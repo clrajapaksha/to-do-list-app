@@ -1,2 +1,2 @@
-# to-do-list-app
+# To Do List App
 To Do List App
