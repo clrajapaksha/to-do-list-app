@@ -73,7 +73,7 @@ resource "aws_ecs_service" "ecs_service" {
  }
 
  triggers = {
-   redeployment = timestamp()
+   redeployment = plantimestamp()
  }
 
  capacity_provider_strategy {
@@ -83,7 +83,7 @@ resource "aws_ecs_service" "ecs_service" {
 
  load_balancer {
    target_group_arn = aws_lb_target_group.ecs_tg.arn
-   container_name   = "dockergs"
+   container_name   = "tasklist"
    container_port   = 80
  }
 
