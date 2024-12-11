@@ -53,6 +53,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # - name: Create .env file
+    #   run: |
+    #     echo "PORT=${{ secrets.PORT }}" >> .env
+    #     echo "PORT=${{ secrets.PORT }}" >> .env
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -68,7 +73,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{github.sha}}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -91,4 +96,4 @@ jobs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false

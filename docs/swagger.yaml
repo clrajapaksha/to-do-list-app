@@ -1,17 +1,83 @@
+definitions:
+  entities.Task:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  entities.TaskCreate:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  contact: {}
 paths:
-  /:
+  /health:
     get:
-      description: album description
+      description: health check
       responses: {}
-      summary: album summary
+      summary: Health endpoint
       tags:
-      - Albums
+      - Health
+  /tasks:
+    get:
+      description: test description
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Task'
+            type: array
+      summary: get all tasks
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: test description
+      parameters:
+      - description: The input task struct
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entities.TaskCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Task'
+      summary: create task
+      tags:
+      - Tasks
+  /tasks/{id}:
+    get:
+      description: test description
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Task'
+      summary: get task by id
+      tags:
+      - Tasks
 swagger: "2.0"

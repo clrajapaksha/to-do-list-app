@@ -2,13 +2,16 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"github.com/clrajapaksha/to-do-list-app/config"
 	docs "github.com/clrajapaksha/to-do-list-app/docs"
+	"github.com/clrajapaksha/to-do-list-app/repository"
+	"github.com/clrajapaksha/to-do-list-app/services/task"
+	"github.com/clrajapaksha/to-do-list-app/utils"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -25,40 +28,40 @@ func NewAPIServer(address string, db *sql.DB) *APIServer {
 	}
 }
 
-// getAlbums responds with the list of all albums as JSON.
-// @Tags Albums
-// @Summary album summary
-// @Description album description
-// @Router / [get]
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World")
+// health responds with success beat signal.
+// @Tags Health
+// @Summary Health endpoint
+// @Description health check
+// @Router /health [get]
+func health(w http.ResponseWriter, r *http.Request) {
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"status": "success"})
 }
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
+// @contact.name   Chathuranga Rajapaksha
+// @contact.url    https://www.linkedin.com/in/clrajapaksha/
+// @contact.email  clrajapaksha@gmail.com
 
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 func (server *APIServer) Run() error {
 	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+	docs.SwaggerInfo.Title = "To Do List API"
+	docs.SwaggerInfo.Description = "This is a sample REST API in Golang."
 	docs.SwaggerInfo.Version = "1.0"
-	// docs.SwaggerInfo.Host = "petstore.swagger.io"
-	// docs.SwaggerInfo.BasePath = "/v2"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	//docs.SwaggerInfo.Host = "http://localhost:8080"
+	//docs.SwaggerInfo.BasePath = "/api/v1"
 
-	//router := http.NewServeMux()
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 
-	// router.HandleFunc("/l", hello)
-	router.Get("/", hello)
+	taskRepository := repository.NewDynamoDBRepository()
+	taskHandler := task.NewHandler(taskRepository)
+	taskRouter := chi.NewRouter()
+	taskHandler.RegisterRoutes(taskRouter)
 
-	// router.HandleFunc("/swagger/*any", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/swagger/doc.json")))
+	router.Mount("/", taskRouter)
+	router.Get("/health", health)
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.URL(config.Envs.AppUrl+"/swagger/doc.json"),
 	))
 
 	return http.ListenAndServe(server.addresss, router)
