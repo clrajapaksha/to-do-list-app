@@ -18,6 +18,3 @@ go test -v ./...
 export PATH=$(go env GOPATH)/bin:$PATH
 swag init -g cmd/main.go
 ```
-
-Test
-go test -v ./...
