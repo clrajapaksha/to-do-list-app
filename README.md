@@ -1,6 +1,8 @@
 # To Do List App
 To Do List App
 
+* Swagger UI endpoint: http://localhost:8080/swagger/index.html
+
 ### Run server
 ```
 go run cmd/main.go
