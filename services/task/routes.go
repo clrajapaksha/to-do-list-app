@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/clrajapaksha/to-do-list-app/cache"
 	"github.com/clrajapaksha/to-do-list-app/entities"
 	"github.com/clrajapaksha/to-do-list-app/repository"
 	"github.com/clrajapaksha/to-do-list-app/utils"
@@ -12,10 +13,11 @@ import (
 
 type Handler struct {
 	repository repository.TaskRepository
+	cache      *cache.Cache[string, entities.Task]
 }
 
-func NewHandler(TaskRepository repository.TaskRepository) *Handler {
-	return &Handler{repository: TaskRepository}
+func NewHandler(taskRepository repository.TaskRepository, cache *cache.Cache[string, entities.Task]) *Handler {
+	return &Handler{repository: taskRepository, cache: cache}
 }
 
 func (h *Handler) RegisterRoutes(router *chi.Mux) {
@@ -50,6 +52,7 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	utils.WriteJSON(w, http.StatusCreated, taskCreated)
+	h.cache.Set(task.Id, task)
 
 }
 
@@ -79,6 +82,10 @@ func (h *Handler) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 // @Router /tasks/{id} [get]
 func (h *Handler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
+	if value, found := h.cache.Get(id); found {
+		utils.WriteJSON(w, http.StatusOK, value)
+		return
+	}
 	task, err := h.repository.FindByID(id)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
@@ -89,4 +96,5 @@ func (h *Handler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJSON(w, http.StatusOK, task)
+	h.cache.Set(task.Id, *task)
 }

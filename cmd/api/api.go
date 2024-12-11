@@ -7,8 +7,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"github.com/clrajapaksha/to-do-list-app/cache"
 	"github.com/clrajapaksha/to-do-list-app/config"
 	docs "github.com/clrajapaksha/to-do-list-app/docs"
+	"github.com/clrajapaksha/to-do-list-app/entities"
 	"github.com/clrajapaksha/to-do-list-app/repository"
 	"github.com/clrajapaksha/to-do-list-app/services/task"
 	"github.com/clrajapaksha/to-do-list-app/utils"
@@ -53,8 +55,10 @@ func (server *APIServer) Run() error {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 
+	cache := cache.New[string, entities.Task]()
+
 	taskRepository := repository.NewDynamoDBRepository()
-	taskHandler := task.NewHandler(taskRepository)
+	taskHandler := task.NewHandler(taskRepository, cache)
 	taskRouter := chi.NewRouter()
 	taskHandler.RegisterRoutes(taskRouter)
 

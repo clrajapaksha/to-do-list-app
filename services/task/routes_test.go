@@ -7,13 +7,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/clrajapaksha/to-do-list-app/cache"
 	"github.com/clrajapaksha/to-do-list-app/entities"
 	"github.com/go-chi/chi/v5"
 )
 
 func TestTaskServiceHandlers(t *testing.T) {
 	taskRepository := &mockTaskRepository{}
-	handler := NewHandler(taskRepository)
+	cache := cache.New[string, entities.Task]()
+	handler := NewHandler(taskRepository, cache)
 
 	payload := entities.Task{
 		Titile:      "test title",
