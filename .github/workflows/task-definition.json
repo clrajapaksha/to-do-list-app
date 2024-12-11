@@ -51,6 +51,5 @@
     },
     "registeredAt": "2024-12-11T05:31:49.645Z",
     "registeredBy": "arn:aws:iam::825765407322:user/todo-list-app-terraform",
-    "enableFaultInjection": false,
     "tags": []
 }
