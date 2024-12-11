@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
  }
  container_definitions = jsonencode([
    {
-     name      = "tasklist"
+     name      = "todolist"
      image     = "825765407322.dkr.ecr.eu-north-1.amazonaws.com/golang/todolist-repo:latest"
      cpu       = 256
      memory    = 512
@@ -83,7 +83,7 @@ resource "aws_ecs_service" "ecs_service" {
 
  load_balancer {
    target_group_arn = aws_lb_target_group.ecs_tg.arn
-   container_name   = "tasklist"
+   container_name   = "todolist"
    container_port   = 80
  }
 

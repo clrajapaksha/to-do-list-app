@@ -1,8 +1,8 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:eu-north-1:825765407322:task-definition/my-ecs-task:2",
+    "taskDefinitionArn": "arn:aws:ecs:eu-north-1:825765407322:task-definition/my-ecs-task:3",
     "containerDefinitions": [
         {
-            "name": "tasklist",
+            "name": "todolist",
             "image": "825765407322.dkr.ecr.eu-north-1.amazonaws.com/golang/todolist-repo:latest",
             "cpu": 256,
             "memory": 512,
@@ -23,7 +23,7 @@
     "family": "my-ecs-task",
     "executionRoleArn": "arn:aws:iam::825765407322:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 2,
+    "revision": 3,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -49,7 +49,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-12-10T21:03:30.805Z",
+    "registeredAt": "2024-12-11T05:31:49.645Z",
     "registeredBy": "arn:aws:iam::825765407322:user/todo-list-app-terraform",
     "enableFaultInjection": false,
     "tags": []
